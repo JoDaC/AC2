@@ -1,6 +1,6 @@
 [versions]
 # plugins
-android-gradle                      = "8.1.1"
+android-gradle                      = "8.1.2"
 detekt                              = "1.23.1"
 detekt-compose-rules                = "0.2.1"
 junit                               = "1.9.3.0"
@@ -33,6 +33,7 @@ test-turbine                        = "1.0.0"
 
 # android test libraries
 test-android-runner                 = "1.5.2"
+ui-tooling-preview-android = "1.5.4"
 
 
 [plugins]
@@ -86,6 +87,7 @@ test-android-runner                 = { module = "androidx.test:runner", version
 
 # debug libraries
 debug-compose-manifest              = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "ui-tooling-preview-android" }
 
 
 [bundles]

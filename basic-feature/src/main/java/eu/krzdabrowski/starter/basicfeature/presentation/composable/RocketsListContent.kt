@@ -7,8 +7,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
-import eu.krzdabrowski.starter.basicfeature.R
+import androidx.compose.ui.unit.dp
 import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
 
 const val ROCKET_DIVIDER_TEST_TAG = "rocketDividerTestTag"
@@ -22,17 +21,16 @@ fun RocketsListContent(
     LazyColumn(
         modifier = modifier
             .padding(
-                horizontal = dimensionResource(id = R.dimen.dimen_medium),
+                horizontal = 16.dp,
             ),
     ) {
         itemsIndexed(
             items = rocketList,
             key = { _, rocket -> rocket.id },
         ) { index, item ->
-            RocketItem(
+            SwipeableCard(
                 rocket = item,
-                onRocketClick = { onRocketClick(item.wikiUrl) },
-            )
+            ) { onRocketClick(item.wikiUrl) }
 
             if (index < rocketList.lastIndex) {
                 Divider(
