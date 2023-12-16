@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.retrofit)
     implementation(libs.timber)
+    implementation(libs.flippable)
     androidTestImplementation(libs.bundles.common.android.test)
 
     ksp(libs.hilt.compiler)

@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.room)
     implementation(libs.timber)
     implementation(libs.ui.tooling.preview.android)
+    implementation(libs.flippable)
     testImplementation(libs.bundles.common.test)
     androidTestImplementation(libs.bundles.common.android.test)
     debugImplementation(libs.debug.compose.manifest)

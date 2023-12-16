@@ -61,11 +61,11 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":basic-feature"))
 
-    implementation(libs.compose.material3)
     implementation(libs.hilt)
     implementation(libs.navigation) // needed for Room
     implementation(libs.room.ktx)
     implementation(libs.timber)
+    implementation(libs.flippable)
 
     ksp(libs.hilt.compiler)
     ksp(libs.room.compiler)

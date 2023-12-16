@@ -38,9 +38,7 @@ class MainActivity : ComponentActivity() {
             AndroidStarterTheme {
                 val navController = rememberNavController()
 
-                Scaffold(
-                    topBar = { MainTopAppBar() },
-                ) {
+                Scaffold{
                     NavigationHost(
                         modifier = Modifier
                             .padding(it),
