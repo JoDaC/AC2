@@ -26,6 +26,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -44,7 +46,7 @@ import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 
 @Composable
-fun SwipeableCard(rocket: RocketDisplayable, onRocketClick: () -> Unit, scale: Float ?= null) {
+fun SwipeableCard(rocket: RocketDisplayable, onRocketClick: () -> Unit, scale: Float? = null) {
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 16.dp)
@@ -81,11 +83,13 @@ fun ExpandableCard(rocket: RocketDisplayable, title: String) {
 
     Card(
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.elevatedCardElevation(8.dp),
+//        elevation = CardDefaults.elevatedCardElevation(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 16.dp)
-            .clickable { expanded = !expanded }
+            .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+                expanded = !expanded
+            }
     ) {
         Column(
             modifier = Modifier.animateContentSize()
@@ -99,7 +103,17 @@ fun ExpandableCard(rocket: RocketDisplayable, title: String) {
                 contentScale = ContentScale.FillWidth
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = rocket.name, style = MaterialTheme.typography.titleLarge)
+                Row {
+                    Text(text = rocket.name, style = MaterialTheme.typography.titleLarge)
+                    Spacer(modifier = Modifier.weight(1f))
+                    Image(
+                        alignment = Alignment.CenterEnd,
+                        painter = painterResource(id = if (expanded) R.drawable.baseline_arrow_upward_24 else R.drawable.baseline_arrow_downward_24),
+                        contentDescription = "star",
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                    )
+                }
 //                Text(text = "Subtitle", style = MaterialTheme.typography.bodyMedium)
             }
 //            Text(
@@ -118,17 +132,18 @@ fun ExpandableCard(rocket: RocketDisplayable, title: String) {
     }
 }
 
-
-@Composable
-fun ButtonRow() {
-    // Replace with your actual buttons
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(onClick = {}) { Text("Button 1") }
-        Button(onClick = {}) { Text("Button 2") }
-        Button(onClick = {}) { Text("Button 3") }
-//        Button(onClick = {}) { Text("Button 4") }
-    }
-}
+//@Preview
+//@Composable
+//fun ExpandableCardPreview() {
+//    val rocket = RocketDisplayable(
+//        id = "1",
+//        name = "Falcon 1",
+//        costPerLaunchInMillions = 5,
+//        firstFlightDate = "2006-03-24",
+//        heightInMeters = 22,
+//        weightInTonnes = 1,
+//        wikiUrl = "https://en.wikipedia.org/wiki/Falcon_1",
+//        imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Falcon_1_Flight_4_liftoff.jpg/1920px-Falcon_1_Flight_4_liftoff.jpg"
+//    )
+//    ExpandableCard(rocket = rocket, title = rocket.name)
+//}
