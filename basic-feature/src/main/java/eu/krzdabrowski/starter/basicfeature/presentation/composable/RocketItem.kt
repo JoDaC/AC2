@@ -52,8 +52,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, onRocketClick: () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
+fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit) {
+    var expanded by remember { mutableStateOf(initialState) }
     var imagevisibility by remember { mutableStateOf(true) }
 //    var cardResize by remember { mutableStateOf(cardResize) }
 

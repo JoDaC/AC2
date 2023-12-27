@@ -7,24 +7,33 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -90,20 +99,55 @@ fun RocketsListContent(
     // Create a derived state that depends on orderedRocketList
     val orderedRocketListState by remember { derivedStateOf { orderedRocketList } }
 
+    // Create a state for expanded state of each card
+    var expandedStates by remember { mutableStateOf(List(rocketList.size) { false }) }
+
+    // Create a state for the visibility of the LazyColumn
+    var isLazyColumnVisible by remember { mutableStateOf(true) }
+
     Box {
-        LazyColumn(state = rememberLazyListState(), modifier = modifier.animateContentSize()) {
-            itemsIndexed(
-                items = orderedRocketListState, // Use the derived state here
-                key = { _, rocket -> rocket.id },
-            ) { index, item ->
-                ExpandableCard(rocket = item,
-                    cardResize = cardResize, onRocketClick = {
-                        selectedRocket = item
-                        // When a card is clicked, move the rocket to the top of the list
-                        orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
-                    })
-                if (index < orderedRocketListState.lastIndex) {
-                    Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG))
+        Column {
+            Button(modifier = Modifier.padding(16.dp), onClick = {
+                expandedStates = expandedStates.map { !it }
+                isLazyColumnVisible = false
+            }) {
+                Text("Toggle Expand")
+            }
+
+            LaunchedEffect(isLazyColumnVisible) {
+                if (!isLazyColumnVisible) {
+                    // Delay to allow the LazyColumn to disappear
+                    kotlinx.coroutines.delay(410)
+                    isLazyColumnVisible = true
+                }
+            }
+
+            AnimatedVisibility(
+                visible = isLazyColumnVisible,
+//                enter = fadeIn(animationSpec = tween(durationMillis = 200)) + slideInVertically(animationSpec = tween(durationMillis = 200)),
+//                exit = fadeOut(animationSpec = tween(durationMillis = 200)) + slideOutVertically(animationSpec = tween(durationMillis = 200))
+
+//                enter = fadeIn(animationSpec = tween(durationMillis = 200))  + expandHorizontally(animationSpec = tween(durationMillis = 200)),
+//                exit = fadeOut(animationSpec = tween(durationMillis = 200)) + shrinkHorizontally(animationSpec = tween(durationMillis = 200))
+                enter = fadeIn(animationSpec = tween(durationMillis = 200)) + scaleIn(animationSpec = tween(durationMillis = 200)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 200)) + scaleOut(animationSpec = tween(durationMillis = 200))
+            ) {
+                LazyColumn(state = rememberLazyListState(), modifier = modifier.animateContentSize()) {
+                    itemsIndexed(
+                        items = orderedRocketListState, // Use the derived state here
+                        key = { _, rocket -> rocket.id },
+                    ) { index, item ->
+                        ExpandableCard(rocket = item,
+                            cardResize = cardResize, initialState = expandedStates[index],
+                            onRocketClick = {
+                                selectedRocket = item
+                                // When a card is clicked, move the rocket to the top of the list
+                                orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
+                            })
+                        if (index < orderedRocketListState.lastIndex) {
+                            Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG))
+                        }
+                    }
                 }
             }
         }
