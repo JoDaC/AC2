@@ -134,7 +134,8 @@ fun FullScreenRocketView(rocket: RocketDisplayable, cardResize: MutableLiveData<
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            Text(text = "", modifier = Modifier.padding(16.dp))
+            // you need to get rid of all the code that changes the list order
+//            Text(text = "", modifier = Modifier.padding(16.dp))
             WebViewWithPlaceholder(rocket = rocket)
         }
     }
