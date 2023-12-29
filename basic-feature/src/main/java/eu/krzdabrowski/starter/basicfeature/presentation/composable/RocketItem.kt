@@ -57,10 +57,11 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
     var imagevisibility by remember { mutableStateOf(false) }
 
     Card(
-        shape = RoundedCornerShape(16.dp),
+//        shape = RoundedCornerShape(16.dp),
+        shape = if (cardResize.value == false) RoundedCornerShape(16.dp) else RoundedCornerShape(4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .let { if (cardResize.value == false) it.padding(16.dp) else it }
+            .padding(16.dp)
             .animateContentSize()
             .clickable(
                 indication = null,

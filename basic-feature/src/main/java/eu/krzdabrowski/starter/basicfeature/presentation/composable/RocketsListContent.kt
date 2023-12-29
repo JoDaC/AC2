@@ -11,12 +11,18 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -61,18 +67,56 @@ fun RocketsListContent(
     // Create a state for the visibility of the LazyColumn
     var isLazyColumnVisible by remember { mutableStateOf(true) }
 
+    val listState = rememberScrollState()
+
+    var isExpanded by remember { mutableStateOf(false) }
+
+
     Box {
         Column {
-            Button(modifier = Modifier.padding(16.dp), colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary ,containerColor = MaterialTheme.colorScheme.surface),onClick = {
-                val tempList = expandedListState.toList().toMutableList() // Create a temporary list
-                tempList.forEachIndexed { index, _ ->
-                    tempList[index] = false
+            Row(modifier = Modifier.horizontalScroll(listState) , horizontalArrangement = Arrangement.SpaceEvenly) {
+                Button(
+                    modifier = Modifier.padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    onClick = {
+                        val tempList = expandedListState.toList().toMutableList() // Create a temporary list
+                        tempList.forEachIndexed { index, _ ->
+                            tempList[index] = !isExpanded // Toggle the state
+                        }
+                        expandedListState.clear()
+                        expandedListState.addAll(tempList)
+                        isLazyColumnVisible = false
+                        isExpanded = !isExpanded // Update the state
+                    }) {
+                    Text("Toggle Expand")
                 }
-                expandedListState.clear()
-                expandedListState.addAll(tempList)
-                isLazyColumnVisible = false
-            }) {
-                Text("Toggle Expand")
+                Button(
+                    modifier = Modifier.padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    onClick = {
+                        orderedRocketList = rocketList.shuffled()
+                        isLazyColumnVisible = false
+                    }) {
+                    Text("Randomize")
+                }
+                Button(
+                    modifier = Modifier.padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    onClick = {
+                        cardResize.value = cardResize.value != true
+                        isLazyColumnVisible = false
+                    }) {
+                    Text("Card Style")
+                }
             }
 
             LaunchedEffect(isLazyColumnVisible) {
@@ -101,7 +145,9 @@ fun RocketsListContent(
                             },
                             onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
                         if (index < orderedRocketListState.lastIndex) {
-                            Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG).padding(horizontal = 16.dp),
+                            Divider(modifier = Modifier
+                                .testTag(ROCKET_DIVIDER_TEST_TAG)
+                                .padding(horizontal = 16.dp),
                                 color = Color.DarkGray
                             )
                         }
