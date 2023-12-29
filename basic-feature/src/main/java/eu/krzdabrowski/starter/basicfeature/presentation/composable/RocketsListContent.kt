@@ -14,7 +14,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
@@ -24,8 +26,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -53,37 +58,6 @@ import kotlin.math.absoluteValue
 const val ROCKET_DIVIDER_TEST_TAG = "rocketDividerTestTag"
 
 @RequiresApi(Build.VERSION_CODES.R)
-//@Composable
-//fun RocketsListContent(
-//    rocketList: List<RocketDisplayable>,
-//    modifier: Modifier = Modifier,
-//    onRocketClick: (String) -> Unit,
-//) {
-//    val scrollState = rememberLazyListState()
-//    LazyColumn(state = scrollState, modifier = modifier.animateContentSize()) {
-//        itemsIndexed(
-//            items = rocketList,
-//            key = { _, rocket -> rocket.id },
-//        ) { index, item ->
-//            val controller = rememberFlipController()
-//            Flippable(
-//                frontSide = {
-//                    ExpandableCard(rocket = item,title = item.name)
-//                },
-//                backSide = {
-//                },
-//                flipController = controller,
-//                flipAnimationType = FlipAnimationType.HORIZONTAL_CLOCKWISE
-//            )
-//
-//
-//            if (index < rocketList.lastIndex) {
-//                Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG))
-//            }
-//        }
-//    }
-//}
-
 @Composable
 fun RocketsListContent(
     rocketList: List<RocketDisplayable>,
@@ -107,7 +81,7 @@ fun RocketsListContent(
 
     Box {
         Column {
-            Button(modifier = Modifier.padding(16.dp), onClick = {
+            Button(modifier = Modifier.padding(16.dp), colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary ,containerColor = MaterialTheme.colorScheme.surface),onClick = {
                 expandedStates = expandedStates.map { !it }
                 isLazyColumnVisible = false
             }) {
@@ -145,7 +119,9 @@ fun RocketsListContent(
                                 orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
                             })
                         if (index < orderedRocketListState.lastIndex) {
-                            Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG))
+                            Divider(modifier = Modifier.testTag(ROCKET_DIVIDER_TEST_TAG).padding(horizontal = 16.dp),
+                                color = Color.DarkGray
+                            )
                         }
                     }
                 }
@@ -154,8 +130,8 @@ fun RocketsListContent(
 
         AnimatedVisibility(
             visible = selectedRocket != null,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
+            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
         ) {
             selectedRocket?.let { rocket ->
                 FullScreenRocketView(rocket, cardResize, onDismiss = {

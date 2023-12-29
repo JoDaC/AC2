@@ -54,15 +54,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit) {
     var expanded by remember { mutableStateOf(initialState) }
-    var imagevisibility by remember { mutableStateOf(true) }
+    var imagevisibility by remember { mutableStateOf(false) }
 //    var cardResize by remember { mutableStateOf(cardResize) }
 
 
-    LaunchedEffect(imagevisibility, expanded) {
-        if (!imagevisibility && !expanded) {
-            cardResize.value = true
-        }
-    }
+//    LaunchedEffect(imagevisibility, expanded) {
+//        if (!imagevisibility && !expanded) {
+//            cardResize.value = true
+//        }
+//    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -75,12 +75,13 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
                 expanded = !expanded
-            }
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier.animateContentSize()
         ) {
-            AnimatedVisibility(visible = imagevisibility) {
+            AnimatedVisibility(visible = expanded) {
                 AsyncImage(
                     model = rocket.imageUrl,
                     contentDescription = "article image",
@@ -92,8 +93,15 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
                 )
             }
             Column(modifier = Modifier.padding(16.dp)) {
-                Row {
-                    Text(text = rocket.name, style = MaterialTheme.typography.titleLarge)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column {
+                        Text(text = rocket.name, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = rocket.firstFlightDate,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    }
                     Spacer(modifier = Modifier.weight(1f))
                     Image(
                         alignment = Alignment.CenterEnd,
@@ -110,7 +118,7 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(16.dp)
                 )
-                Button(onClick = {
+                Button(colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.surfaceTint ,containerColor = MaterialTheme.colorScheme.outlineVariant),onClick = {
                     CoroutineScope(Dispatchers.Main).launch {
                         imagevisibility = false
                         expanded = false
