@@ -66,10 +66,10 @@ fun RocketsListContent(
             Button(modifier = Modifier.padding(16.dp), colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.primary ,containerColor = MaterialTheme.colorScheme.surface),onClick = {
                 val tempList = expandedListState.toList().toMutableList() // Create a temporary list
                 tempList.forEachIndexed { index, _ ->
-                    tempList[index] = false // Set all elements to false
+                    tempList[index] = false
                 }
-                expandedListState.clear() // Clear the original list
-                expandedListState.addAll(tempList) // Add all elements from the temporary list
+                expandedListState.clear()
+                expandedListState.addAll(tempList)
                 isLazyColumnVisible = false
             }) {
                 Text("Toggle Expand")
@@ -90,15 +90,13 @@ fun RocketsListContent(
             ) {
                 LazyColumn(state = rememberLazyListState(), modifier = modifier.animateContentSize()) {
                     itemsIndexed(
-                        items = orderedRocketListState, // Use the derived state here
+                        items = orderedRocketListState,
                         key = { _, rocket -> rocket.id },
                     ) { index, item ->
-                        // Use the index to access and modify the expanded state of each card
                         ExpandableCard(rocket = item,
                             cardResize = cardResize, initialState = expandedListState[index],
                             onRocketClick = {
                                 selectedRocket = item
-                                // When a card is clicked, move the rocket to the top of the list
                                 orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
                             },
                             onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes

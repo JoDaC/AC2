@@ -66,7 +66,7 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
                 expanded = !expanded
-                onExpandChange(expanded) // Call the onExpandChange function when expanded changes
+                onExpandChange(expanded)
             },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -164,39 +164,6 @@ fun WebViewWithPlaceholder(rocket: RocketDisplayable) {
         }
     }, modifier = Modifier.fillMaxSize())
 }
-
-@Composable
-fun WebView() {
-    AndroidView(factory = { context ->
-        WebView(context).apply {
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                    view?.loadUrl(request?.url.toString())
-                    return true
-                }
-            }
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            loadUrl("https://www.google.com")
-        }
-    })
-}
-
-//@Composable
-//fun BasicImage(rocket: RocketDisplayable, fullScreen: Boolean) {
-//    AsyncImage(
-//        model = rocket.imageUrl,
-//        contentDescription = "article image",
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .clip(RoundedCornerShape(16.dp))
-//            .clickable { fullScreen = !fullScreen }
-//            .animateContentSize(),
-//        contentScale = ContentScale.FillWidth
-//    )
-//}
 
 @Composable
 fun SwipeableCard(rocket: RocketDisplayable, onRocketClick: () -> Unit, scale: Float? = null) {
