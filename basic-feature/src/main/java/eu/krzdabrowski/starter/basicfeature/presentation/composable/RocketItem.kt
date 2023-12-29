@@ -52,29 +52,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit) {
+fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit, onExpandChange: (Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(initialState) }
     var imagevisibility by remember { mutableStateOf(false) }
-//    var cardResize by remember { mutableStateOf(cardResize) }
-
-
-//    LaunchedEffect(imagevisibility, expanded) {
-//        if (!imagevisibility && !expanded) {
-//            cardResize.value = true
-//        }
-//    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-//            .padding(vertical = 16.dp)
             .let { if (cardResize.value == false) it.padding(16.dp) else it }
             .animateContentSize()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
                 expanded = !expanded
+                onExpandChange(expanded) // Call the onExpandChange function when expanded changes
             },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
