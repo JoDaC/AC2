@@ -5,4 +5,6 @@ sealed class NavigationDestination(
 ) {
     data object Rockets : NavigationDestination("rocketsDestination")
     data object Back : NavigationDestination("navigationBack")
+    data object Archive : NavigationDestination("archiveDestination")
+    data object Insights : NavigationDestination("insightsDestination")
 }

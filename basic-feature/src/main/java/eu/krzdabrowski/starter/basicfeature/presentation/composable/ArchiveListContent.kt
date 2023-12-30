@@ -39,13 +39,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
+import com.wajahatkarim.flippable.FlipAnimationType
+import com.wajahatkarim.flippable.Flippable
+import com.wajahatkarim.flippable.rememberFlipController
 import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
 
-const val ROCKET_DIVIDER_TEST_TAG = "rocketDividerTestTag"
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun RocketsListContent(
+fun ArchiveListContent(
     rocketList: List<RocketDisplayable>,
     modifier: Modifier = Modifier,
     onRocketClick: (String) -> Unit,
@@ -58,6 +60,10 @@ fun RocketsListContent(
 
     // Create a derived state that depends on orderedRocketList
     val orderedRocketListState by remember { derivedStateOf { orderedRocketList } }
+
+    val tagsList = listOf("The Verge", "NYT", "CNN", "BBC", "The Guardian", "The Times", "The Sun", "The Daily Mail", "The Daily Telegraph", "The Independent", "The Mirror", "The Express", "The Financial Times", "The Morning Star", "The Spectator", "The Economist", "The New Statesman", "The Week", "The Big Issue", "The New Yorker", "The Atlantic", "The Washington Post", "The LA Times", "The Chicago Tribune", "The Boston Globe", "The Wall Street Journal", "The New York Post", "The New York Times", "The Washington Times", "The Washington Examiner", "The Daily Caller", "The Daily Wire", "The Daily Beast", "The Huffington Post", "The Blaze", "The Hill", "The Federalist", "The Nation", "The American Conservative", "The American Prospect", "The National Review", "The New Republic", "The Christian Science Monitor", "The New York Observer", "The New York Sun", "The New York Daily News", "The New York Amsterdam News", "The New Yorker")
+
+    val orderedTagsListState by remember { derivedStateOf { tagsList } }
 
     // Create a state for expanded state of each card
     val expandedListState = remember { mutableStateListOf(*Array(rocketList.size) { false }) }
@@ -132,16 +138,36 @@ fun RocketsListContent(
             ) {
                 LazyColumn(state = rememberLazyListState(), modifier = modifier.animateContentSize()) {
                     itemsIndexed(
+                        // all this rocket shit needs to get stripped out
                         items = orderedRocketListState,
                         key = { _, rocket -> rocket.id },
                     ) { index, item ->
-                        ExpandableArticleCard(rocket = item,
-                            cardResize = cardResize, initialState = expandedListState[index],
-                            onRocketClick = {
-                                selectedRocket = item
-                                orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
+
+                        val controller = rememberFlipController()
+
+                        Flippable(
+                            frontSide = {
+                                ExpandableArchiveCard(
+                                    title = orderedTagsListState[index % orderedTagsListState.size],
+                                    rocket = item,
+                                    cardResize = cardResize, initialState = expandedListState[index],
+                                    onRocketClick = {
+                                        selectedRocket = item
+                                        orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
+                                    },
+                                    onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
                             },
-                            onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
+                            backSide = {
+                            },
+                            flipController = controller,
+                            flipAnimationType = FlipAnimationType.HORIZONTAL_CLOCKWISE,
+                            flipOnTouch = true,
+                        )
+
+
+
+
+
                         if (index < orderedRocketListState.lastIndex) {
                             Divider(modifier = Modifier
                                 .testTag(ROCKET_DIVIDER_TEST_TAG)

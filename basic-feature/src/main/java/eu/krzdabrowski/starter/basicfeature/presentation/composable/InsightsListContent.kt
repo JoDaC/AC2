@@ -41,11 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
 
-const val ROCKET_DIVIDER_TEST_TAG = "rocketDividerTestTag"
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun RocketsListContent(
+fun InsightsListContent(
     rocketList: List<RocketDisplayable>,
     modifier: Modifier = Modifier,
     onRocketClick: (String) -> Unit,

@@ -7,18 +7,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +24,11 @@ import eu.krzdabrowski.starter.basicfeature.R
 import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,8 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit, onExpandChange: (Boolean) -> Unit) {
+fun ExpandableArticleCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit, onExpandChange: (Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(initialState) }
     var imagevisibility by remember { mutableStateOf(false) }
 
@@ -126,6 +121,91 @@ fun ExpandableCard(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolea
             }
         }
     }
+
+@Composable
+fun ExpandableArchiveCard(title: String, rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, initialState: Boolean, onRocketClick: () -> Unit, onExpandChange: (Boolean) -> Unit) {
+    var expanded by remember { mutableStateOf(initialState) }
+    var imagevisibility by remember { mutableStateOf(false) }
+
+    Card(
+        shape = RoundedCornerShape(4.dp),
+//        shape = if (cardResize.value == false) RoundedCornerShape(16.dp) else RoundedCornerShape(4.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .animateContentSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                expanded = !expanded
+                onExpandChange(expanded)
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(
+            modifier = Modifier.animateContentSize()
+        ) {
+//            AnimatedVisibility(visible = expanded) {
+//                AsyncImage(
+//                    model = rocket.imageUrl,
+//                    contentDescription = "article image",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clip(RoundedCornerShape(16.dp))
+//                        .animateContentSize(),
+//                    contentScale = ContentScale.FillWidth
+//                )
+//            }
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column {
+                        Text(text = title, style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = rocket.firstFlightDate,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Image(
+                        alignment = Alignment.CenterEnd,
+                        painter = painterResource(id = if (expanded) R.drawable.baseline_arrow_upward_24 else R.drawable.baseline_arrow_downward_24),
+                        contentDescription = "star",
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
+                    )
+                }
+            }
+            if (expanded) {
+//                Text(
+//                    text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//                    style = MaterialTheme.typography.bodySmall,
+//                    modifier = Modifier.padding(16.dp)
+//                )
+
+                ArchivedList()
+
+
+
+
+
+
+//                Button(colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.surfaceTint ,containerColor = MaterialTheme.colorScheme.outlineVariant),onClick = {
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        imagevisibility = false
+//                        expanded = false
+//                        delay(350) // delay for 100ms
+//                        onRocketClick()
+//                    }
+//                },
+//                    modifier = Modifier.padding(16.dp)) {
+//                    Text("Open WebView")
+//                }
+            }
+        }
+    }
+}
+
 @Composable
 fun FullScreenRocketView(rocket: RocketDisplayable, cardResize: MutableLiveData<Boolean?>, onDismiss: () -> Unit) {
     BackHandler {
@@ -193,6 +273,49 @@ fun SwipeableCard(rocket: RocketDisplayable, onRocketClick: () -> Unit, scale: F
                 Text(text = "Title", style = MaterialTheme.typography.titleLarge)
             }
 
+        }
+    }
+}
+
+//private fun LazyListScope.ArchivedList() {
+//    items(10) { index ->
+//        ExpandableArticleCard(rocket = RocketDisplayable(
+//            id = "id",
+//            name = "name",
+//            costPerLaunchInMillions = 1,
+//            firstFlightDate = "firstFlightDate",
+//            heightInMeters = 1,
+//            weightInTonnes = 1,
+//            wikiUrl = "wikiUrl",
+//            imageUrl = "imageUrl",
+//        ), cardResize = MutableLiveData<Boolean?>(false), initialState = false, onRocketClick = {}, onExpandChange = {})
+//        Divider(modifier = Modifier
+//            .testTag(ROCKET_DIVIDER_TEST_TAG)
+//            .padding(horizontal = 16.dp),
+//            color = Color.DarkGray
+//        )
+//    }
+//}
+
+@Composable
+private fun ArchivedList() {
+    LazyColumn(modifier = Modifier.height(500.dp)) {
+        items(100){
+            ExpandableArticleCard(rocket = RocketDisplayable(
+                id = "id",
+                name = "name",
+                costPerLaunchInMillions = 1,
+                firstFlightDate = "firstFlightDate",
+                heightInMeters = 1,
+                weightInTonnes = 1,
+                wikiUrl = "wikiUrl",
+                imageUrl = "imageUrl",
+            ), cardResize = MutableLiveData<Boolean?>(false), initialState = false, onRocketClick = {}, onExpandChange = {})
+            Divider(modifier = Modifier
+                .testTag(ROCKET_DIVIDER_TEST_TAG)
+                .padding(horizontal = 16.dp),
+                color = Color.DarkGray
+            )
         }
     }
 }
