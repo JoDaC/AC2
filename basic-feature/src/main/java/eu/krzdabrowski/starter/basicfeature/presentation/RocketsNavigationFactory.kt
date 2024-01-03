@@ -1,13 +1,17 @@
 package eu.krzdabrowski.starter.basicfeature.presentation
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import eu.krzdabrowski.starter.basicfeature.presentation.composable.ArchiveRoute
 import eu.krzdabrowski.starter.basicfeature.presentation.composable.InsightsRoute
 import eu.krzdabrowski.starter.basicfeature.presentation.composable.RocketsRoute
+import eu.krzdabrowski.starter.basicfeature.presentation.composable.WebBrowserRoute
+import eu.krzdabrowski.starter.core.navigation.NavigationDestination.Archive
 import eu.krzdabrowski.starter.core.navigation.NavigationDestination.Insights
 import eu.krzdabrowski.starter.core.navigation.NavigationDestination.Rockets
-import eu.krzdabrowski.starter.core.navigation.NavigationDestination.Archive
+import eu.krzdabrowski.starter.core.navigation.NavigationDestination.WebBrowser
 import eu.krzdabrowski.starter.core.navigation.NavigationFactory
 import javax.inject.Inject
 
@@ -25,5 +29,30 @@ class RocketsNavigationFactory @Inject constructor() : NavigationFactory {
         builder.composable(Insights.route) {
             InsightsRoute()
         }
+
+//        builder.composable(WebBrowser.route) {
+//            WebBrowserRoute()
+//        }
+
+        builder.composable(
+            route = WebBrowser.route + "/{encodedRocketUrl}",
+            arguments = listOf(navArgument("encodedRocketUrl") { type = NavType.StringType })
+        ) {
+            WebBrowserRoute()
+        }
+
+
+//        builder.composable(
+//            "${WebBrowser.route}/{rocket}",
+//            arguments = listOf(navArgument("rocket") {
+//                type = NavType.ParcelableType(RocketDisplayable::class.java)
+//            })
+//        ) { backStackEntry ->
+//            val rocket = backStackEntry.arguments?.getParcelable<RocketDisplayable>("rocket")
+//            if (rocket != null) {
+//                WebBrowserRoute(rocket = rocket)
+//            }
+//        }
+
     }
 }

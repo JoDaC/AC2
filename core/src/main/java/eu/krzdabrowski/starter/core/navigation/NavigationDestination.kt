@@ -7,4 +7,5 @@ sealed class NavigationDestination(
     data object Back : NavigationDestination("navigationBack")
     data object Archive : NavigationDestination("archiveDestination")
     data object Insights : NavigationDestination("insightsDestination")
+    data object WebBrowser : NavigationDestination("webBrowserDestination")
 }

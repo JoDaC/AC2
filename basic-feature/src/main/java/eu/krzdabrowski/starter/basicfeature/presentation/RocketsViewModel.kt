@@ -12,9 +12,11 @@ import eu.krzdabrowski.starter.basicfeature.presentation.RocketsUiState.PartialS
 import eu.krzdabrowski.starter.basicfeature.presentation.RocketsUiState.PartialState.Fetched
 import eu.krzdabrowski.starter.basicfeature.presentation.RocketsUiState.PartialState.Loading
 import eu.krzdabrowski.starter.basicfeature.presentation.mapper.toPresentationModel
+import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
 import eu.krzdabrowski.starter.core.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -50,11 +52,13 @@ class RocketsViewModel @Inject constructor(
             isLoading = true,
             isError = false,
         )
+
         is Fetched -> previousState.copy(
             isLoading = false,
             rockets = partialState.list,
             isError = false,
         )
+
         is Error -> previousState.copy(
             isLoading = false,
             isError = true,
@@ -92,4 +96,32 @@ class RocketsViewModel @Inject constructor(
 
         return emptyFlow()
     }
+
+//    private fun getRocketById(id: String): Flow<PartialState> = flow {
+//        getRocketsUseCase().map { it ->
+//            it.fold(
+//                onSuccess = { rocketList ->
+//                    Fetched(rocketList.map { it.toPresentationModel() })
+//                },
+//                onFailure = {
+//                    Error(it)
+//                },
+//            )
+//        }
+//    }
+
+    // getRocketById returns RocketDisplayable
+    fun getRocketById(id: String): Flow<RocketDisplayable?> = flow {
+        val rocketListResult = getRocketsUseCase().first() // Retrieve the list of rockets
+        val rocket = rocketListResult.fold(
+            onSuccess = { rocketList ->
+                rocketList.map { it.toPresentationModel() }.find { it.id == id }
+            },
+            onFailure = {
+                null // Handle the error appropriately
+            }
+        )
+        emit(rocket) // Emit the found rocket, or null if not found or in case of failure
+    }
+
 }

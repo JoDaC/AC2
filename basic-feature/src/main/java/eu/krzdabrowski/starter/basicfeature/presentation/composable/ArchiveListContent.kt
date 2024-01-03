@@ -9,8 +9,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,7 +59,56 @@ fun ArchiveListContent(
     // Create a derived state that depends on orderedRocketList
     val orderedRocketListState by remember { derivedStateOf { orderedRocketList } }
 
-    val tagsList = listOf("The Verge", "NYT", "CNN", "BBC", "The Guardian", "The Times", "The Sun", "The Daily Mail", "The Daily Telegraph", "The Independent", "The Mirror", "The Express", "The Financial Times", "The Morning Star", "The Spectator", "The Economist", "The New Statesman", "The Week", "The Big Issue", "The New Yorker", "The Atlantic", "The Washington Post", "The LA Times", "The Chicago Tribune", "The Boston Globe", "The Wall Street Journal", "The New York Post", "The New York Times", "The Washington Times", "The Washington Examiner", "The Daily Caller", "The Daily Wire", "The Daily Beast", "The Huffington Post", "The Blaze", "The Hill", "The Federalist", "The Nation", "The American Conservative", "The American Prospect", "The National Review", "The New Republic", "The Christian Science Monitor", "The New York Observer", "The New York Sun", "The New York Daily News", "The New York Amsterdam News", "The New Yorker")
+    val tagsList = listOf(
+        "The Verge",
+        "NYT",
+        "CNN",
+        "BBC",
+        "The Guardian",
+        "The Times",
+        "The Sun",
+        "The Daily Mail",
+        "The Daily Telegraph",
+        "The Independent",
+        "The Mirror",
+        "The Express",
+        "The Financial Times",
+        "The Morning Star",
+        "The Spectator",
+        "The Economist",
+        "The New Statesman",
+        "The Week",
+        "The Big Issue",
+        "The New Yorker",
+        "The Atlantic",
+        "The Washington Post",
+        "The LA Times",
+        "The Chicago Tribune",
+        "The Boston Globe",
+        "The Wall Street Journal",
+        "The New York Post",
+        "The New York Times",
+        "The Washington Times",
+        "The Washington Examiner",
+        "The Daily Caller",
+        "The Daily Wire",
+        "The Daily Beast",
+        "The Huffington Post",
+        "The Blaze",
+        "The Hill",
+        "The Federalist",
+        "The Nation",
+        "The American Conservative",
+        "The American Prospect",
+        "The National Review",
+        "The New Republic",
+        "The Christian Science Monitor",
+        "The New York Observer",
+        "The New York Sun",
+        "The New York Daily News",
+        "The New York Amsterdam News",
+        "The New Yorker"
+    )
 
     val orderedTagsListState by remember { derivedStateOf { tagsList } }
 
@@ -78,7 +125,10 @@ fun ArchiveListContent(
 
     Box {
         Column {
-            Row(modifier = Modifier.horizontalScroll(listState) , horizontalArrangement = Arrangement.SpaceEvenly) {
+            Row(
+                modifier = Modifier.horizontalScroll(listState),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Button(
                     modifier = Modifier.padding(8.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -86,7 +136,8 @@ fun ArchiveListContent(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     onClick = {
-                        val tempList = expandedListState.toList().toMutableList() // Create a temporary list
+                        val tempList =
+                            expandedListState.toList().toMutableList() // Create a temporary list
                         tempList.forEachIndexed { index, _ ->
                             tempList[index] = !isExpanded // Toggle the state
                         }
@@ -133,10 +184,21 @@ fun ArchiveListContent(
 
             AnimatedVisibility(
                 visible = isLazyColumnVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 200)) + scaleIn(animationSpec = tween(durationMillis = 200)),
-                exit = fadeOut(animationSpec = tween(durationMillis = 200)) + scaleOut(animationSpec = tween(durationMillis = 200))
+                enter = fadeIn(animationSpec = tween(durationMillis = 200)) + scaleIn(
+                    animationSpec = tween(
+                        durationMillis = 200
+                    )
+                ),
+                exit = fadeOut(animationSpec = tween(durationMillis = 200)) + scaleOut(
+                    animationSpec = tween(
+                        durationMillis = 200
+                    )
+                )
             ) {
-                LazyColumn(state = rememberLazyListState(), modifier = modifier.animateContentSize()) {
+                LazyColumn(
+                    state = rememberLazyListState(),
+                    modifier = modifier.animateContentSize()
+                ) {
                     itemsIndexed(
                         // all this rocket shit needs to get stripped out
                         items = orderedRocketListState,
@@ -150,17 +212,20 @@ fun ArchiveListContent(
                                 ExpandableArchiveCard(
                                     title = orderedTagsListState[index % orderedTagsListState.size],
                                     rocket = item,
-                                    cardResize = cardResize, initialState = expandedListState[index],
-                                    onRocketClick = {
-                                        selectedRocket = item
-                                        orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
-                                    },
-                                    onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
+                                    initialState = expandedListState[index]
+                                ) { expanded ->
+                                    expandedListState[index] = expanded
+                                } // Update the expandedState when it changes
                             },
                             backSide = {
+                                ExpandableArchiveCard(
+                                    title = orderedTagsListState[index % orderedTagsListState.size],
+                                    rocket = item,
+                                    initialState = expandedListState[index]
+                                ) { expanded -> expandedListState[index] = expanded }
                             },
                             flipController = controller,
-                            flipAnimationType = FlipAnimationType.HORIZONTAL_CLOCKWISE,
+                            flipAnimationType = FlipAnimationType.VERTICAL_CLOCKWISE,
                             flipOnTouch = true,
                         )
 
@@ -169,9 +234,10 @@ fun ArchiveListContent(
 
 
                         if (index < orderedRocketListState.lastIndex) {
-                            Divider(modifier = Modifier
-                                .testTag(ROCKET_DIVIDER_TEST_TAG)
-                                .padding(horizontal = 16.dp),
+                            Divider(
+                                modifier = Modifier
+                                    .testTag(ROCKET_DIVIDER_TEST_TAG)
+                                    .padding(horizontal = 16.dp),
                                 color = Color.DarkGray
                             )
                         }
@@ -180,18 +246,18 @@ fun ArchiveListContent(
             }
         }
 
-        AnimatedVisibility(
-            visible = selectedRocket != null,
-            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
-            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-        ) {
-            selectedRocket?.let { rocket ->
-                FullScreenRocketView(rocket, cardResize, onDismiss = {
-                    selectedRocket = null
-                    // When the BackHandler is called, restore the original order of the list
-                    orderedRocketList = rocketList
-                })
-            }
-        }
+//        AnimatedVisibility(
+//            visible = selectedRocket != null,
+//            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
+//            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+//        ) {
+//            selectedRocket?.let { rocket ->
+//                FullScreenRocketView(rocket, cardResize, setShowNavigationBar, onDismiss = {
+//                    selectedRocket = null
+//                    // When the BackHandler is called, restore the original order of the list
+//                    orderedRocketList = rocketList
+//                })
+//            }
+//        }
     }
 }

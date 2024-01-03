@@ -22,7 +22,6 @@ class RocketsListContentTest {
         composeTestRule.setContent {
             RocketsListContent(
                 rocketList = testRockets,
-                onRocketClick = { },
             )
         }
     }

@@ -134,13 +134,14 @@ fun InsightsListContent(
                         items = orderedRocketListState,
                         key = { _, rocket -> rocket.id },
                     ) { index, item ->
-                        ExpandableArticleCard(rocket = item,
-                            cardResize = cardResize, initialState = expandedListState[index],
-                            onRocketClick = {
-                                selectedRocket = item
-                                orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
-                            },
-                            onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
+//                        ExpandableArticleCard(rocket = item,
+//                            cardResize = cardResize, initialState = expandedListState[index],
+//                            onRocketClick = {
+//                                selectedRocket = item
+//                                orderedRocketList = listOf(item) + orderedRocketList.filter { it != item }
+//                            },
+//                            onExpandChange = { expanded -> expandedListState[index] = expanded }) // Update the expandedState when it changes
+                        Text(text = "PH")
                         if (index < orderedRocketListState.lastIndex) {
                             Divider(modifier = Modifier
                                 .testTag(ROCKET_DIVIDER_TEST_TAG)
@@ -153,18 +154,18 @@ fun InsightsListContent(
             }
         }
 
-        AnimatedVisibility(
-            visible = selectedRocket != null,
-            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
-            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-        ) {
-            selectedRocket?.let { rocket ->
-                FullScreenRocketView(rocket, cardResize, onDismiss = {
-                    selectedRocket = null
-                    // When the BackHandler is called, restore the original order of the list
-                    orderedRocketList = rocketList
-                })
-            }
-        }
+//        AnimatedVisibility(
+//            visible = selectedRocket != null,
+//            enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
+//            exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+//        ) {
+//            selectedRocket?.let { rocket ->
+//                FullScreenRocketView(rocket, cardResize, onDismiss = {
+//                    selectedRocket = null
+//                    // When the BackHandler is called, restore the original order of the list
+//                    orderedRocketList = rocketList
+//                })
+//            }
+//        }
     }
 }

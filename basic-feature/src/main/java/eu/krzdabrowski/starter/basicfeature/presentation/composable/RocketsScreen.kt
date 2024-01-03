@@ -45,7 +45,6 @@ internal fun RocketsScreen(
     onIntent: (RocketsIntent) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) {
@@ -102,7 +101,6 @@ private fun RocketsAvailableContent(
 
     RocketsListContent(
         rocketList = uiState.rockets,
-        onRocketClick = onRocketClick,
     )
 }
 
