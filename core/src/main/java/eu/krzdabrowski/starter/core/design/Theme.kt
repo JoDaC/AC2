@@ -1,16 +1,11 @@
 package eu.krzdabrowski.starter.core.design
 
 import android.app.Activity
-import android.app.UiModeManager
-import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -69,7 +64,7 @@ private val DarkColors = darkColorScheme(
     errorContainer = md_theme_dark_errorContainer,
     onError = md_theme_dark_onError,
     onErrorContainer = md_theme_dark_onErrorContainer,
-    background = black,
+    background = md_theme_dark_surface,
     onBackground = md_theme_dark_onBackground,
     surface = md_theme_dark_surface,
     onSurface = md_theme_dark_onSurface,
@@ -98,7 +93,8 @@ fun AndroidStarterTheme(
 
         SideEffect {
             currentWindow.statusBarColor = colorScheme.onSecondary.toArgb()
-            WindowCompat.getInsetsController(currentWindow, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(currentWindow, view).isAppearanceLightStatusBars =
+                darkTheme
         }
     }
 
@@ -125,6 +121,7 @@ fun pickColorScheme(
 //            if (darkTheme) DarkColorScheme else LightColorScheme
 //        }
     }
+
     darkTheme -> DarkColors
     else -> LightColors
 }

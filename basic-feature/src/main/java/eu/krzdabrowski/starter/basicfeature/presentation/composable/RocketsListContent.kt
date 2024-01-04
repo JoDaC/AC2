@@ -54,7 +54,9 @@ fun RocketsListContent(
     val orderedRocketListState by remember { derivedStateOf { orderedRocketList } }
 
     // Create a state for expanded state of each card
-    val expandedListState = remember { mutableStateListOf(*Array(rocketList.size) { true }) }
+    val expandedListState = remember { mutableStateListOf(*Array(rocketList.size) { false }) }
+
+    var fullscreenRocketList by remember { mutableStateOf(listOf<RocketDisplayable>()) }
 
     // Create a state for the visibility of the LazyColumn
     var isLazyColumnVisible by remember { mutableStateOf(true) }
@@ -62,6 +64,9 @@ fun RocketsListContent(
     val listState = rememberScrollState()
 
     var isExpanded by remember { mutableStateOf(false) }
+
+    // Initialize fullscreenRocketList with rocketList
+    fullscreenRocketList = rocketList
 
     Box {
         Column {
@@ -91,10 +96,10 @@ fun RocketsListContent(
                     modifier = modifier.animateContentSize()
                 ) {
                     itemsIndexed(
-                        items = orderedRocketListState,
+                        items = fullscreenRocketList,
                         key = { _, rocket -> rocket.id },
                     ) { index, item ->
-                        ExpandableArticleCard(rocket = item,
+                        ExpandableGoogleCard(rocket = item,
                             cardResize = cardResize, initialState = expandedListState[index],
                             onRocketClick = {
                                 selectedRocket = item
@@ -107,6 +112,13 @@ fun RocketsListContent(
                             },
                             onExpandChange = { expanded ->
                                 expandedListState[index] = expanded
+                            },
+                            fullscreen = {
+                                if (fullscreenRocketList.size > 1) {
+                                    fullscreenRocketList = listOf(item)
+                                } else {
+                                    fullscreenRocketList = rocketList
+                                }
                             }) // Update the expandedState when it changes
                         if (index < orderedRocketListState.lastIndex) {
                             Divider(
