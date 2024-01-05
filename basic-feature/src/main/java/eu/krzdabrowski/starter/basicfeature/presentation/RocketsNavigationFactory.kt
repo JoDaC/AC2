@@ -22,6 +22,14 @@ class RocketsNavigationFactory @Inject constructor() : NavigationFactory {
             RocketsRoute()
         }
 
+//        builder.composable(
+//            route = Rockets.route + "/{hideBottomNavigation}",
+//            arguments = listOf(navArgument("hideBottomNavigation") { type = NavType.BoolType })
+//        ) {
+////            RocketsRoute()
+//        }
+
+
         builder.composable(Archive.route) {
             ArchiveRoute()
         }
@@ -30,29 +38,11 @@ class RocketsNavigationFactory @Inject constructor() : NavigationFactory {
             InsightsRoute()
         }
 
-//        builder.composable(WebBrowser.route) {
-//            WebBrowserRoute()
-//        }
-
         builder.composable(
             route = WebBrowser.route + "/{encodedRocketUrl}",
             arguments = listOf(navArgument("encodedRocketUrl") { type = NavType.StringType })
         ) {
             WebBrowserRoute()
         }
-
-
-//        builder.composable(
-//            "${WebBrowser.route}/{rocket}",
-//            arguments = listOf(navArgument("rocket") {
-//                type = NavType.ParcelableType(RocketDisplayable::class.java)
-//            })
-//        ) { backStackEntry ->
-//            val rocket = backStackEntry.arguments?.getParcelable<RocketDisplayable>("rocket")
-//            if (rocket != null) {
-//                WebBrowserRoute(rocket = rocket)
-//            }
-//        }
-
     }
 }

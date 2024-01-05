@@ -92,9 +92,10 @@ fun AndroidStarterTheme(
             ?: error("Not in an activity - unable to get Window reference")
 
         SideEffect {
-            currentWindow.statusBarColor = colorScheme.onSecondary.toArgb()
+//            currentWindow.statusBarColor = Color.TRANSPARENT
+            currentWindow.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(currentWindow, view).isAppearanceLightStatusBars =
-                darkTheme
+                !darkTheme
         }
     }
 

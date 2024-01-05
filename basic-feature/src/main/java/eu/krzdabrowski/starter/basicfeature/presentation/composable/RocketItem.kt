@@ -48,6 +48,7 @@ import androidx.lifecycle.MutableLiveData
 import coil.compose.AsyncImage
 import eu.krzdabrowski.starter.basicfeature.R
 import eu.krzdabrowski.starter.basicfeature.presentation.model.RocketDisplayable
+import eu.krzdabrowski.starter.core.utils.LocalNavController
 
 @Composable
 fun ExpandableArticleCard(
@@ -137,6 +138,8 @@ fun ExpandableGoogleCard(
 ) {
     var expanded by remember { mutableStateOf(initialState) }
     var imagevisibility by remember { mutableStateOf(false) }
+    val navController = LocalNavController.current
+    val currentBackStackEntry = navController.currentBackStackEntry
 
     if (cardResize.value == true) {
         BackHandler {
@@ -144,6 +147,10 @@ fun ExpandableGoogleCard(
             expanded = !expanded
             onExpandChange(expanded)
             cardResize.value = !cardResize.value!!
+            currentBackStackEntry?.savedStateHandle?.set(
+                "hideBottomNavigation",
+                false
+            )
         }
     }
 
@@ -194,6 +201,7 @@ fun ExpandableGoogleCard(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Row(verticalAlignment = Alignment.CenterVertically) {
+//                        val navController = LocalNavController.current
                         Image(
                             painter = painterResource(id = R.drawable.baseline_fullscreen_24),
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
@@ -204,6 +212,13 @@ fun ExpandableGoogleCard(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() }) {
                                     fullscreen()
+                                    // trigger nav argument for hideBottomNavigation
+//                                    navController.navigate("${NavigationDestination.Rockets.route}/$hideBottomNavigation")
+//                                    val currentBackStackEntry = navController.currentBackStackEntry
+                                    currentBackStackEntry?.savedStateHandle?.set(
+                                        "hideBottomNavigation",
+                                        true
+                                    )
                                     expanded = !expanded
                                     onExpandChange(expanded)
                                     cardResize.value = !cardResize.value!!
@@ -234,6 +249,7 @@ fun ExpandableGoogleCard(
                             Text(
                                 text = "AI Summary :",
                                 style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(top = 16.dp)
@@ -241,6 +257,7 @@ fun ExpandableGoogleCard(
                             Text(
                                 text = "In a tragic turn of events, a recent rocket launch resulted in a catastrophic explosion, leading to the complete devastation of a nearby town. The explosion, occurring shortly after liftoff, unleashed an immense force, leveling buildings and infrastructure, and causing an unknown number of casualties. Emergency response teams and investigators are currently on site, working to understand the cause of the disaster and to provide aid to those affected.",
                                 style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .padding(bottom = 16.dp, top = 8.dp)
